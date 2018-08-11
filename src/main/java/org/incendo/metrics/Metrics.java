@@ -1,5 +1,6 @@
 package org.incendo.metrics;
 
+import com.intellectualsites.configurable.ConfigurationFactory;
 import com.mongodb.MongoClient;
 import java.io.File;
 import java.util.Optional;
@@ -8,7 +9,6 @@ import org.mongodb.morphia.Datastore;
 import xyz.kvantum.server.api.config.CoreConfig.Application;
 import xyz.kvantum.server.api.core.Kvantum;
 import xyz.kvantum.server.api.core.ServerImplementation;
-import xyz.kvantum.server.api.logging.Logger;
 import xyz.kvantum.server.api.util.InstanceFactory;
 import xyz.kvantum.server.api.util.RequestManager;
 import xyz.kvantum.server.api.views.Routes;
@@ -22,8 +22,7 @@ public class Metrics
 
 	private static final Object[] STATIC_ROUTES = new Object[] {};
 
-	@Getter
-	private static Metrics instance;
+	@Getter private static Metrics instance;
 
 	@Getter private final Kvantum kvantum;
 	@Getter private final MongoAccountManager accountManager;
@@ -37,13 +36,9 @@ public class Metrics
 		//
 		InstanceFactory.setupInstanceAutomagic( this );
 
-		final ServerContext serverContext = ServerContext.builder()
-				.coreFolder( new File( "./kvantum" ) )
-				.logWrapper( new DefaultLogWrapper() )
-				.router( RequestManager.builder().build() )
-				.standalone( true )
-				.serverSupplier( StandaloneServer::new )
-				.build();
+		final ServerContext serverContext = ServerContext.builder().coreFolder( new File( "./kvantum" ) )
+				.logWrapper( new DefaultLogWrapper() ).router( RequestManager.builder().build() ).standalone( true )
+				.serverSupplier( StandaloneServer::new ).build();
 		final Optional<Kvantum> kvantumOptional = serverContext.create();
 
 		if ( !kvantumOptional.isPresent() )
@@ -53,7 +48,7 @@ public class Metrics
 			throw new IllegalStateException(); // Just here to make IDEA happy
 		}
 
-		Logger.info("Hello World ;)");
+		ConfigurationFactory.load( MetricsConfig.class, new File( serverContext.getCoreFolder(), "config" ) );
 
 		//
 		// Enforce MongoDB usage, so we can use Morphia
@@ -88,7 +83,9 @@ public class Metrics
 				try
 				{
 					ServerImplementation.getImplementation().stopServer();
-				} catch ( final Throwable ignore ) {}
+				} catch ( final Throwable ignore )
+				{
+				}
 			}
 			System.exit( -1 );
 		}
