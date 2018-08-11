@@ -1,3 +1,10 @@
+## Running
+
+The server relies on a MongoDB connection. The connection details
+can be configured in `./kvantum/config/server.yml`. It is important
+that the server is launched using the MongoDB database implementation
+as the application internals rely on that connection.
+
 ## Development
 
 ### Code Style
