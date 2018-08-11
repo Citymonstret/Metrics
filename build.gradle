@@ -1,0 +1,21 @@
+group 'org.incendo'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = 'org.incendo.metrics.Metrics'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    // Used to simplify code creation
+    compile 'org.projectlombok:lombok:1.16.18'
+    testCompileOnly 'org.projectlombok:lombok:1.16.18'
+    implementation 'com.github.Sauilitired:Kvantum:250ccf3b0e'
+}
